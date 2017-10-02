@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "StopScrolling",
+  "short_name": "STOP",
+  "description": "This extension will stop you from scrolling mindlessly on facebook",
+  "version": "1.1",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent":false
+  },
+  "content_scripts":[{
+  	"matches": ["https://www.facebook.com/"],
+  	"js": ["jquery-3.2.1.min.js","content.js"]
+  }],
+  "page_action": {
+    "default_icon": {
+      "16": "ppg16.png",
+      "48": "ppg48.png",
+      "128": "ppg128.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "https://ajax.googleapis.com/",
+    "declarativeContent",
+    "storage",
+    "tabs"
+  ]
+}

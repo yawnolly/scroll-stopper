@@ -1,0 +1,52 @@
+<!doctype html>
+<head></head>
+<body>
+	<script>
+var scroll;
+
+function setScroll(){
+	chrome.storage.sync.get("scroll",function(result){
+		scroll = result.scroll;
+	})
+}
+
+function restrictScroll(){
+	setScroll();
+	var limReached = false;
+	$(document).scroll(function(e) {
+		var doc = $(document).scrollTop();
+		if(doc > scroll){
+			//$(document).scrollTop(scroll);
+			var junk = .05*(doc - scroll);
+			$("#contentArea").css("filter","blur("+junk+"px) saturate("+2*junk+")");
+			if(!limReached){
+				var audio = new Audio('audio.mp3');
+				audio.play();
+				limReached = true;
+			}
+		}
+	})	
+}
+
+$(function(){
+	chrome.runtime.sendMessage({ cmd: "getOnOffState" }, function (response) {
+	    if (response == true) {
+	    	restrictScroll();
+	    }
+	});
+
+	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+		if (request.cmd == "propogateOnOffState") {
+        	if(!request.data.value){
+        		$(document).off("scroll");
+        	} else{
+        		restrictScroll();
+        	}
+    	} else{
+    		setScroll();
+    	}
+	})
+
+})
+	</script>
+</body>
